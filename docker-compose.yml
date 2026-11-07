@@ -1,0 +1,54 @@
+services:
+  base-mediatheque:
+    image: mysql:8.0
+    container_name: mediatheque-mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4
+    environment:
+      MYSQL_ROOT_PASSWORD: RacineMediatheque2026
+      MYSQL_DATABASE: mediatheque_db
+      MYSQL_USER: mediatheque
+      MYSQL_PASSWORD: Mediatheque2026!
+    ports:
+      - "3307:3306"
+    volumes:
+      - volume-mediatheque:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-pRacineMediatheque2026"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  application-mediatheque:
+    image: usmba/conteneur-mediatheque:1.0
+    container_name: mediatheque-app
+    restart: unless-stopped
+    depends_on:
+      base-mediatheque:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://base-mediatheque:3306/mediatheque_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: mediatheque
+      SPRING_DATASOURCE_PASSWORD: Mediatheque2026!
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: "8111"
+    ports:
+      - "8111:8111"
+
+  console-mediatheque:
+    image: phpmyadmin:5-apache
+    container_name: mediatheque-pma
+    restart: unless-stopped
+    depends_on:
+      base-mediatheque:
+        condition: service_healthy
+    environment:
+      PMA_HOST: base-mediatheque
+      PMA_PORT: "3306"
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "8112:80"
+
+volumes:
+  volume-mediatheque:

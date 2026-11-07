@@ -1,0 +1,74 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.03kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/eclipse-temurin:17-jre-jammy
+#2 ...
+
+#3 [auth] library/eclipse-temurin:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#4 [auth] library/maven:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#5 [internal] load metadata for docker.io/library/maven:3.9-eclipse-temurin-17
+#5 DONE 2.3s
+
+#2 [internal] load metadata for docker.io/library/eclipse-temurin:17-jre-jammy
+#2 DONE 2.3s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 181B done
+#6 DONE 0.0s
+
+#7 [construction 1/6] FROM docker.io/library/maven:3.9-eclipse-temurin-17@sha256:1a352420f7aba21f5ad08df31bab55f74c013fb491f1ae8ab1dd7ff9ed698584
+#7 resolve docker.io/library/maven:3.9-eclipse-temurin-17@sha256:1a352420f7aba21f5ad08df31bab55f74c013fb491f1ae8ab1dd7ff9ed698584 0.0s done
+#7 DONE 0.0s
+
+#8 [stage-1 1/5] FROM docker.io/library/eclipse-temurin:17-jre-jammy@sha256:2a9eb226abb654c9d1f91b53cf638d20cb3abb726d1b18a67909c29515545469
+#8 resolve docker.io/library/eclipse-temurin:17-jre-jammy@sha256:2a9eb226abb654c9d1f91b53cf638d20cb3abb726d1b18a67909c29515545469 0.0s done
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 1.18kB 0.0s done
+#9 DONE 0.0s
+
+#10 [construction 3/6] COPY pom.xml .
+#10 CACHED
+
+#11 [construction 4/6] RUN mvn -B -q dependency:go-offline
+#11 CACHED
+
+#12 [construction 5/6] COPY src ./src
+#12 CACHED
+
+#13 [construction 6/6] RUN mvn -B -q clean package -DskipTests
+#13 CACHED
+
+#14 [stage-1 3/5] RUN apt-get update  && apt-get install -y --no-install-recommends curl  && rm -rf /var/lib/apt/lists/*  && groupadd -r mediatheque && useradd -r -g mediatheque mediatheque
+#14 CACHED
+
+#15 [stage-1 4/5] COPY --from=construction /build/target/conteneur-mediatheque.jar app.jar
+#15 CACHED
+
+#16 [stage-1 2/5] WORKDIR /app
+#16 CACHED
+
+#17 [construction 2/6] WORKDIR /build
+#17 CACHED
+
+#18 [stage-1 5/5] RUN chown -R mediatheque:mediatheque /app
+#18 CACHED
+
+#19 exporting to image
+#19 exporting layers done
+#19 exporting manifest sha256:19157834823be7ceeaadc5ce37b03f2b353e7e70bbe1dbede36b47060aa3a0c0 done
+#19 exporting config sha256:5da1389d85fedc28af46b57d513e52027b2ae100632b1126c18219a1146d8ba5 done
+#19 exporting attestation manifest sha256:849539549916b061ab2dfeed2b47d7b1a913d9e87dbbce38ad4602ca73358a2f
+#19 exporting attestation manifest sha256:849539549916b061ab2dfeed2b47d7b1a913d9e87dbbce38ad4602ca73358a2f 0.0s done
+#19 exporting manifest list sha256:5af1b80cb777385ab2f182623ac3aacf219e180535f10f631ccbea319643a5f4 0.0s done
+#19 naming to docker.io/usmba/conteneur-mediatheque:1.0 done
+#19 unpacking to docker.io/usmba/conteneur-mediatheque:1.0 0.0s done
+#19 DONE 0.3s

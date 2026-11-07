@@ -1,0 +1,10 @@
+# Fichier d'exclusion pour la construction de l'image Docker
+target/
+.git/
+.gitignore
+.idea/
+.vscode/
+docs/
+*.log
+*.iml
+Makefile

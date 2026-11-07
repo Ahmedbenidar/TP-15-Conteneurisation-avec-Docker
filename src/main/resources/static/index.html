@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Médiathèque — catalogue conteneurisé</title>
+    <style>
+        :root {
+            --fond: #10151c;
+            --carte: #17202b;
+            --bord: #26323f;
+            --texte: #e8eef5;
+            --doux: #92a3b6;
+            --accent: #4cc2a1;
+            --alerte: #e2673d;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 32px 20px 60px;
+            background: var(--fond);
+            color: var(--texte);
+            font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+        }
+        header { max-width: 1060px; margin: 0 auto 28px; }
+        h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -.4px; }
+        .sous-titre { color: var(--doux); font-size: 14px; margin: 0; }
+        .pastille {
+            display: inline-block; margin-top: 14px; padding: 5px 12px;
+            border-radius: 999px; background: rgba(76, 194, 161, .14);
+            color: var(--accent); font-size: 12px; letter-spacing: .4px;
+            border: 1px solid rgba(76, 194, 161, .4);
+        }
+        .grille {
+            max-width: 1060px; margin: 0 auto 26px;
+            display: grid; gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        }
+        .carte {
+            background: var(--carte); border: 1px solid var(--bord);
+            border-radius: 12px; padding: 18px 20px;
+        }
+        .carte .intitule { color: var(--doux); font-size: 12px; text-transform: uppercase; letter-spacing: .8px; }
+        .carte .valeur { font-size: 30px; font-weight: 600; margin-top: 8px; }
+        .carte .valeur.accent { color: var(--accent); }
+        table {
+            max-width: 1060px; width: 100%; margin: 0 auto;
+            border-collapse: collapse; background: var(--carte);
+            border: 1px solid var(--bord); border-radius: 12px; overflow: hidden;
+        }
+        th, td { padding: 12px 16px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--bord); }
+        th { background: #1d2733; color: var(--doux); font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+        tr:last-child td { border-bottom: none; }
+        .badge { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .badge.oui { background: rgba(76, 194, 161, .16); color: var(--accent); }
+        .badge.non { background: rgba(226, 103, 61, .16); color: var(--alerte); }
+        footer { max-width: 1060px; margin: 22px auto 0; color: var(--doux); font-size: 12px; }
+        code { color: var(--accent); }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Médiathèque — catalogue conteneurisé</h1>
+    <p class="sous-titre">Application Spring Boot exécutée dans un conteneur Docker, base MySQL dans un second conteneur.</p>
+    <span class="pastille" id="etat">connexion à l'API…</span>
+</header>
+
+<section class="grille">
+    <div class="carte">
+        <div class="intitule">Ouvrages</div>
+        <div class="valeur" id="total">—</div>
+    </div>
+    <div class="carte">
+        <div class="intitule">Disponibles</div>
+        <div class="valeur accent" id="dispo">—</div>
+    </div>
+    <div class="carte">
+        <div class="intitule">Categorie informatique</div>
+        <div class="valeur" id="info">—</div>
+    </div>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Titre</th>
+        <th>Auteur</th>
+        <th>Catégorie</th>
+        <th>Année</th>
+        <th>Disponible</th>
+    </tr>
+    </thead>
+    <tbody id="lignes">
+    <tr><td colspan="5">Chargement…</td></tr>
+    </tbody>
+</table>
+
+<footer>Source : <code>GET /api/catalogue/ouvrages</code> — base MySQL <code>mediatheque_db</code></footer>
+
+<script>
+    const base = '/api/catalogue';
+
+    function badge(dispo) {
+        return dispo
+            ? '<span class="badge oui">Oui</span>'
+            : '<span class="badge non">Non</span>';
+    }
+
+    async function charger() {
+        const etat = document.getElementById('etat');
+        try {
+            const [synthese, ouvrages] = await Promise.all([
+                fetch(base + '/synthese').then(r => r.json()),
+                fetch(base + '/ouvrages').then(r => r.json())
+            ]);
+
+            document.getElementById('total').textContent = synthese.totalOuvrages;
+            document.getElementById('dispo').textContent = synthese.ouvragesDisponibles;
+            document.getElementById('info').textContent = synthese.ouvragesInformatique;
+            etat.textContent = 'API joignable — ' + ouvrages.length + ' ouvrages lus en base';
+
+            document.getElementById('lignes').innerHTML = ouvrages.map(o => `
+                <tr>
+                    <td>${o.titre}</td>
+                    <td>${o.auteur}</td>
+                    <td>${o.categorie}</td>
+                    <td>${o.anneeParution}</td>
+                    <td>${badge(o.disponible)}</td>
+                </tr>`).join('');
+        } catch (e) {
+            etat.textContent = 'API indisponible : ' + e.message;
+        }
+    }
+
+    charger();
+</script>
+</body>
+</html>

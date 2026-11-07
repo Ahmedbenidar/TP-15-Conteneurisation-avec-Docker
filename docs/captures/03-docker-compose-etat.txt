@@ -1,0 +1,35 @@
+=== docker compose ps ===
+NAME                IMAGE                             COMMAND                  SERVICE                   CREATED         STATUS                   PORTS
+mediatheque-app     usmba/conteneur-mediatheque:1.0   "java -jar app.jar"      application-mediatheque   6 minutes ago   Up 6 minutes (healthy)   0.0.0.0:8111->8111/tcp, [::]:8111->8111/tcp
+mediatheque-mysql   mysql:8.0                         "docker-entrypoint.s…"   base-mediatheque          6 minutes ago   Up 6 minutes (healthy)   0.0.0.0:3307->3306/tcp, [::]:3307->3306/tcp
+mediatheque-pma     phpmyadmin:5-apache               "/docker-entrypoint.…"   console-mediatheque       6 minutes ago   Up 6 minutes             0.0.0.0:8112->80/tcp, [::]:8112->80/tcp
+
+=== docker compose config --services ===
+base-mediatheque
+application-mediatheque
+console-mediatheque
+
+=== docker volume ls ===
+DRIVER    VOLUME NAME
+local     36eda96530ff13d5f5f0a07a1986cf507ec6d829711429609b6733aa022e07ad
+local     4883d725fda37234ff354430d8daa2bfd1f0b5c8a34ea8c1ade22655c6ff9c5c
+local     69552cbeb71421dfd158498f00a3b2c24074466326a78f5bb1a4d3c1d3a229aa
+local     d9fd8d590ac3e1f7453a021d02bb4955b3e5e01ea1e4c0a693774388427fc38e
+local     hadoop-dn1-data
+local     hadoop-dn2-data
+local     hadoop-hbase-data
+local     hadoop-hive-postgresql
+local     hadoop-nn-data
+local     mysql_data
+local     oralab-oradata
+local     tp15_conteneur_mediatheque_volume-mediatheque
+
+=== docker network ls ===
+NETWORK ID     NAME                                 DRIVER    SCOPE
+3cf208bead43   tp15_conteneur_mediatheque_default   bridge    local
+
+=== docker compose images ===
+CONTAINER           REPOSITORY                    TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+mediatheque-app     usmba/conteneur-mediatheque   1.0                 linux/amd64         5af1b80cb777        183MB               17 minutes ago
+mediatheque-mysql   mysql                         8.0                 linux/amd64         7dcddc01f13b        234MB               34 minutes ago
+mediatheque-pma     phpmyadmin                    5-apache            linux/amd64         f54a37b908b2        197MB               28 minutes ago
